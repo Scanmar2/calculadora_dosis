@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de Dosis Pediátricas</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;1,9..144,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F4F1EC;
+    --card: #FFFFFF;
+    --text: #1A1A1A;
+    --text-muted: #6B6560;
+    --accent-para: #2D7A4F;
+    --accent-para-light: #E8F5ED;
+    --accent-para-border: #B8DECA;
+    --accent-ibu: #B85C1F;
+    --accent-ibu-light: #FFF3E8;
+    --accent-ibu-border: #F0CCA8;
+    --border: #DDD8D2;
+    --danger: #C43E3E;
+    --danger-bg: #FFF0F0;
+    --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.06);
+    --shadow-lg: 0 4px 24px rgba(0,0,0,0.08);
+    --radius: 16px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem 3rem;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 2rem;
+    max-width: 900px;
+  }
+
+  header h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 1.9rem;
+    line-height: 1.2;
+    margin-bottom: 0.4rem;
+    letter-spacing: -0.02em;
+  }
+
+  header p {
+    color: var(--text-muted);
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 900px;
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  /* Input Card */
+  .input-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.8rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .input-card label {
+    display: block;
+    font-weight: 500;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.6rem;
+  }
+
+  .weight-row {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .weight-row input {
+    flex: 1;
+    font-family: 'Fraunces', serif;
+    font-size: 2.8rem;
+    font-weight: 600;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 0.4rem 1rem;
+    text-align: center;
+    outline: none;
+    transition: border-color 0.2s;
+    color: var(--text);
+    background: transparent;
+    -moz-appearance: textfield;
+  }
+
+  .weight-row input::-webkit-outer-spin-button,
+  .weight-row input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .weight-row input:focus {
+    border-color: var(--accent-para);
+  }
+
+  .weight-row .unit {
+    font-family: 'Fraunces', serif;
+    font-size: 1.4rem;
+    color: var(--text-muted);
+    font-weight: 300;
+  }
+
+  .btn-calc {
+    width: 100%;
+    margin-top: 1.2rem;
+    padding: 0.9rem;
+    border: none;
+    border-radius: 12px;
+    background: var(--text);
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+
+  .btn-calc:hover { transform: translateY(-1px); box-shadow: var(--shadow-lg); }
+  .btn-calc:active { transform: translateY(0); }
+
+  /* Results */
+  .results { display: none; }
+  .results.visible { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; animation: fadeUp 0.4s ease; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .drug-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.6rem;
+    border-top: 4px solid transparent;
+  }
+
+  .drug-card.paracetamol {
+    border-top-color: var(--accent-para);
+  }
+
+  .drug-card.ibuprofeno {
+    border-top-color: var(--accent-ibu);
+  }
+
+  .drug-card .drug-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+  }
+
+  .drug-card .drug-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  .paracetamol .drug-icon {
+    background: var(--accent-para-light);
+    color: var(--accent-para);
+  }
+
+  .ibuprofeno .drug-icon {
+    background: var(--accent-ibu-light);
+    color: var(--accent-ibu);
+  }
+
+  .drug-card .drug-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 1.2rem;
+  }
+
+  .drug-card .drug-subtitle {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  .dose-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+  }
+
+  .dose-item {
+    padding: 0.8rem;
+    border-radius: 10px;
+    background: #FAFAF8;
+    border: 1px solid var(--border);
+  }
+
+  .dose-item .dose-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin-bottom: 0.3rem;
+    text-align: center;
+  }
+
+  .dose-item .dose-value {
+    font-family: 'Fraunces', serif;
+    font-size: 1.35rem;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .dose-item .dose-unit {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    font-weight: 400;
+  }
+
+  .paracetamol .dose-item .dose-value { color: var(--accent-para); }
+  .ibuprofeno .dose-item .dose-value { color: var(--accent-ibu); }
+
+  .drug-card .drug-notes {
+    margin-top: 0.8rem;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    padding: 0.7rem;
+    border-radius: 8px;
+  }
+
+  .paracetamol .drug-notes { background: var(--accent-para-light); border: 1px solid var(--accent-para-border); }
+  .ibuprofeno .drug-notes { background: var(--accent-ibu-light); border: 1px solid var(--accent-ibu-border); }
+
+  /* Error */
+  .error-msg {
+    display: none;
+    background: var(--danger-bg);
+    color: var(--danger);
+    border: 1px solid #F5C6C6;
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    font-size: 0.88rem;
+    margin-top: 0.8rem;
+    line-height: 1.4;
+  }
+  .error-msg.visible { display: block; animation: fadeUp 0.3s ease; }
+
+  /* Disclaimer */
+  .disclaimer {
+    margin-top: 1.2rem;
+    text-align: center;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.2rem 1.6rem;
+  }
+
+  .disclaimer strong { color: var(--danger); }
+
+  @media (max-width: 700px) {
+    .weight-row input { font-size: 2.2rem; }
+    .results.visible { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>💊 Calculadora de Dosis</h1>
+  <p>Calcula las dosis orientativas de Paracetamol e Ibuprofeno según el peso del paciente.</p>
+</header>
+
+<div class="container">
+  <div class="input-card">
+    <label for="peso">Peso del paciente</label>
+    <div class="weight-row">
+      <input type="number" id="peso" min="1" max="150" step="0.1" placeholder="0" autofocus>
+      <span class="unit">kg</span>
+    </div>
+    <div class="error-msg" id="error"></div>
+    <button class="btn-calc" onclick="calcular()">Calcular dosis</button>
+  </div>
+
+  <div class="results" id="results">
+    <!-- Paracetamol -->
+    <div class="drug-card paracetamol">
+      <div class="drug-header">
+        <div class="drug-icon">🟢</div>
+        <div>
+          <div class="drug-name">Paracetamol</div>
+          <div class="drug-subtitle">Antipirético / Analgésico</div>
+        </div>
+      </div>
+      <div class="dose-grid">
+        <div class="dose-item">
+          <div class="dose-label">Dosis por toma</div>
+          <div class="dose-value" id="para-dose">—</div>
+        </div>
+        <div class="dose-item">
+          <div class="dose-label">Dosis máx. diaria</div>
+          <div class="dose-value" id="para-max">—</div>
+        </div>
+        <div class="dose-item">
+          <div class="dose-label">Jarabe 100mg/mL</div>
+          <div class="dose-value" id="para-jarabe">—</div>
+        </div>
+
+      </div>
+      <div class="drug-notes">
+        ⏱ Cada <strong>6–8 horas</strong>. Máximo 4 tomas/día. No exceder 4 g/día en adultos ni 75 mg/kg/día en niños.
+      </div>
+    </div>
+
+    <!-- Ibuprofeno -->
+    <div class="drug-card ibuprofeno">
+      <div class="drug-header">
+        <div class="drug-icon">🟠</div>
+        <div>
+          <div class="drug-name">Ibuprofeno</div>
+          <div class="drug-subtitle">AINE (Antiinflamatorio No Esteroideo)</div>
+        </div>
+      </div>
+      <div class="dose-grid">
+        <div class="dose-item">
+          <div class="dose-label">Dosis por toma</div>
+          <div class="dose-value" id="ibu-dose">—</div>
+        </div>
+        <div class="dose-item">
+          <div class="dose-label">Dosis máx. diaria</div>
+          <div class="dose-value" id="ibu-max">—</div>
+        </div>
+        <div class="dose-item">
+          <div class="dose-label">Jarabe 20mg/mL</div>
+          <div class="dose-value" id="ibu-jarabe">—</div>
+        </div>
+
+      </div>
+      <div class="drug-notes">
+        ⏱ Cada <strong>6–8 horas</strong>. Máximo 3–4 tomas/día. No exceder 40 mg/kg/día en niños ni 1200 mg/día (sin prescripción) en adultos.
+      </div>
+    </div>
+  </div>
+
+  <div class="disclaimer">
+    <strong>⚠ Aviso importante:</strong> Esta herramienta es solo orientativa y <strong>no sustituye</strong> el criterio de un profesional de la salud. Consulta siempre con un médico o farmacéutico antes de administrar cualquier medicamento.
+  </div>
+</div>
+
+<script>
+  const pesoInput = document.getElementById('peso');
+  const errorEl = document.getElementById('error');
+  const resultsEl = document.getElementById('results');
+
+  pesoInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') calcular();
+  });
+
+  function calcular() {
+    const peso = parseFloat(pesoInput.value);
+    errorEl.classList.remove('visible');
+    resultsEl.classList.remove('visible');
+
+    if (!peso || peso <= 0) {
+      showError('Introduce un peso válido mayor que 0.');
+      return;
+    }
+    if (peso > 200) {
+      showError('El peso introducido parece demasiado alto. Verifica el valor.');
+      return;
+    }
+
+    // === PARACETAMOL ===
+    // Dosis estándar: 10-15 mg/kg/toma (usamos 15 mg/kg)
+    // Máx diario: 60-75 mg/kg/día o 4g en adultos
+    const paraDose = Math.min(peso * 15, 1000); // mg por toma, tope 1g
+    const paraMaxDia = Math.min(peso * 60, 4000); // mg/día, tope 4g
+    const paraJarabe = paraDose / 100; // mL (concentración 100mg/mL)
+
+    document.getElementById('para-dose').innerHTML = `${paraDose.toFixed(0)} <span class="dose-unit">mg</span>`;
+    document.getElementById('para-max').innerHTML = `${paraMaxDia.toFixed(0)} <span class="dose-unit">mg/día</span>`;
+    document.getElementById('para-jarabe').innerHTML = `${paraJarabe.toFixed(1)} <span class="dose-unit">mL</span>`;
+
+    // === IBUPROFENO ===
+    // Fórmula práctica: peso / 3 = mL de jarabe
+    // Asume jarabe de 20mg/mL → dosis ≈ 6.67 mg/kg
+    // Máx diario: 40 mg/kg/día o 1200mg sin receta
+    const ibuJarabeMl = peso / 3; // mL de jarabe (fórmula peso/3)
+    const ibuDose = ibuJarabeMl * 20; // mg (asumiendo jarabe 20mg/mL)
+    const ibuMaxDia = Math.min(peso * 40, 1200); // mg/día, tope 1200mg sin receta
+
+    document.getElementById('ibu-dose').innerHTML = `${ibuDose.toFixed(0)} <span class="dose-unit">mg</span>`;
+    document.getElementById('ibu-max').innerHTML = `${ibuMaxDia.toFixed(0)} <span class="dose-unit">mg/día</span>`;
+    document.getElementById('ibu-jarabe').innerHTML = `${ibuJarabeMl.toFixed(1)} <span class="dose-unit">mL</span>`;
+
+    resultsEl.classList.add('visible');
+    resultsEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function showError(msg) {
+    errorEl.textContent = msg;
+    errorEl.classList.add('visible');
+  }
+</script>
+
+</body>
+</html>
