@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Calculadora de Dosis Pediátricas</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💊</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;1,9..144,300&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -289,9 +290,199 @@
 
   .disclaimer strong { color: var(--danger); }
 
+  /* ── Breathing Timer ── */
+  .timer-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.8rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .timer-card h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+
+  .timer-card .timer-subtitle {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-bottom: 1.2rem;
+  }
+
+  .timer-options {
+    display: flex;
+    gap: 0.6rem;
+    margin-bottom: 1.2rem;
+    flex-wrap: wrap;
+  }
+
+  .timer-options button {
+    flex: 1;
+    min-width: 80px;
+    padding: 0.55rem 0.8rem;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .timer-options button.active {
+    border-color: #4A6FA5;
+    background: #EEF3FA;
+    color: #4A6FA5;
+  }
+
+  .timer-options button:hover:not(.active) {
+    border-color: #999;
+  }
+
+  .timer-display {
+    text-align: center;
+    margin-bottom: 1.2rem;
+  }
+
+  .timer-clock {
+    font-family: 'Fraunces', serif;
+    font-size: 4rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: #4A6FA5;
+    transition: color 0.3s;
+  }
+
+  .timer-clock.warning { color: var(--accent-ibu); }
+  .timer-clock.done    { color: var(--accent-para); }
+
+  .timer-progress {
+    width: 100%;
+    height: 6px;
+    border-radius: 99px;
+    background: var(--border);
+    overflow: hidden;
+    margin-top: 0.8rem;
+  }
+
+  .timer-progress-bar {
+    height: 100%;
+    border-radius: 99px;
+    background: #4A6FA5;
+    width: 100%;
+    transition: width 1s linear, background 0.3s;
+  }
+
+  .timer-progress-bar.warning { background: var(--accent-ibu); }
+  .timer-progress-bar.done    { background: var(--accent-para); }
+
+  .timer-controls {
+    display: flex;
+    gap: 0.6rem;
+  }
+
+  .timer-controls button {
+    flex: 1;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+
+  .btn-start {
+    background: #4A6FA5;
+    color: #fff;
+  }
+
+  .btn-start:hover { transform: translateY(-1px); box-shadow: var(--shadow-lg); }
+  .btn-start:active { transform: translateY(0); }
+
+  .btn-reset {
+    background: var(--border);
+    color: var(--text);
+    flex: 0 0 auto;
+    padding: 0.75rem 1.1rem;
+    font-size: 1rem;
+  }
+
+  .btn-reset:hover { background: #ccc; }
+
+  .timer-result {
+    margin-top: 1rem;
+    padding: 0.9rem 1rem;
+    border-radius: 10px;
+    background: var(--accent-para-light);
+    border: 1px solid var(--accent-para-border);
+    font-size: 0.9rem;
+    color: var(--text);
+    display: none;
+    animation: fadeUp 0.4s ease;
+  }
+
+  .timer-result.visible { display: block; }
+
+  .timer-result .result-rr {
+    font-family: 'Fraunces', serif;
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--accent-para);
+  }
+
+  .timer-result .result-label {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .timer-result .result-interp {
+    margin-top: 0.4rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  /* tap counter */
+  .tap-btn {
+    width: 100%;
+    margin-top: 0.8rem;
+    padding: 0.6rem;
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.1s;
+  }
+
+  .tap-btn:active {
+    background: var(--bg);
+    border-color: #4A6FA5;
+    color: #4A6FA5;
+    transform: scale(0.98);
+  }
+
+  .tap-count {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    color: #4A6FA5;
+  }
+
   @media (max-width: 700px) {
     .weight-row input { font-size: 2.2rem; }
     .results.visible { grid-template-columns: 1fr; }
+    .timer-clock { font-size: 3rem; }
   }
 </style>
 </head>
@@ -373,6 +564,38 @@
     </div>
   </div>
 
+  <!-- ── Breathing Rate Timer ── -->
+  <div class="timer-card">
+    <h2>🫁 Temporizador de Frecuencia Respiratoria</h2>
+    <p class="timer-subtitle">Cuenta las respiraciones durante el tiempo seleccionado y calcula la FR.</p>
+
+    <div class="timer-options">
+      <button onclick="selectDuration(60)"  id="opt-60"  class="active">1 min</button>
+      <button onclick="selectDuration(30)"  id="opt-30">30 s</button>
+      <button onclick="selectDuration(15)"  id="opt-15">15 s</button>
+    </div>
+
+    <div class="timer-display">
+      <div class="timer-clock" id="timer-clock">1:00</div>
+      <div class="timer-progress"><div class="timer-progress-bar" id="timer-bar"></div></div>
+    </div>
+
+    <div class="timer-controls">
+      <button class="btn-start" id="btn-start" onclick="toggleTimer()">Iniciar</button>
+      <button class="btn-reset" onclick="resetTimer()">↺</button>
+    </div>
+
+    <button class="tap-btn" id="tap-btn" onclick="tapBreath()" style="display:none">
+      Toca aquí por cada respiración &nbsp;·&nbsp; <span class="tap-count" id="tap-count">0</span>
+    </button>
+
+    <div class="timer-result" id="timer-result">
+      <div class="result-label">Frecuencia Respiratoria</div>
+      <div><span class="result-rr" id="result-rr">—</span> <span style="font-size:1rem;color:var(--text-muted)">rpm</span></div>
+      <div class="result-interp" id="result-interp"></div>
+    </div>
+  </div>
+
   <div class="disclaimer">
     <strong>⚠ Aviso importante:</strong> Esta herramienta es solo orientativa y <strong>no sustituye</strong> el criterio de un profesional de la salud. Consulta siempre con un médico o farmacéutico antes de administrar cualquier medicamento.
   </div>
@@ -432,6 +655,127 @@
     errorEl.textContent = msg;
     errorEl.classList.add('visible');
   }
+
+  // ── Breathing Timer ──
+  let timerDuration = 60;
+  let timerRemaining = 60;
+  let timerInterval = null;
+  let timerRunning = false;
+  let tapCount = 0;
+
+  function selectDuration(secs) {
+    if (timerRunning) return;
+    timerDuration = secs;
+    timerRemaining = secs;
+    ['60','30','15'].forEach(s => document.getElementById('opt-'+s).classList.remove('active'));
+    document.getElementById('opt-'+secs).classList.add('active');
+    updateClockDisplay();
+    resetBar();
+    hideResult();
+  }
+
+  function updateClockDisplay() {
+    const m = Math.floor(timerRemaining / 60);
+    const s = timerRemaining % 60;
+    document.getElementById('timer-clock').textContent =
+      timerDuration === 60 ? `${m}:${String(s).padStart(2,'0')}` : `${timerRemaining}`;
+
+    const clock = document.getElementById('timer-clock');
+    const bar   = document.getElementById('timer-bar');
+    const frac  = timerRemaining / timerDuration;
+    clock.classList.remove('warning','done');
+    bar.classList.remove('warning','done');
+    if (timerRemaining === 0) {
+      clock.classList.add('done');
+      bar.classList.add('done');
+    } else if (frac <= 0.25) {
+      clock.classList.add('warning');
+      bar.classList.add('warning');
+    }
+    bar.style.width = (frac * 100) + '%';
+  }
+
+  function resetBar() {
+    const bar = document.getElementById('timer-bar');
+    bar.style.transition = 'none';
+    bar.style.width = '100%';
+    bar.classList.remove('warning','done');
+    setTimeout(() => { bar.style.transition = 'width 1s linear, background 0.3s'; }, 50);
+  }
+
+  function toggleTimer() {
+    if (timerRunning) {
+      pauseTimer();
+    } else {
+      startTimer();
+    }
+  }
+
+  function startTimer() {
+    if (timerRemaining === 0) resetTimer();
+    timerRunning = true;
+    document.getElementById('btn-start').textContent = 'Pausar';
+    document.getElementById('tap-btn').style.display = 'block';
+    timerInterval = setInterval(() => {
+      timerRemaining--;
+      updateClockDisplay();
+      if (timerRemaining === 0) {
+        clearInterval(timerInterval);
+        timerRunning = false;
+        document.getElementById('btn-start').textContent = 'Iniciar';
+        showBreathingResult();
+      }
+    }, 1000);
+  }
+
+  function pauseTimer() {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    document.getElementById('btn-start').textContent = 'Reanudar';
+  }
+
+  function resetTimer() {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    timerRemaining = timerDuration;
+    tapCount = 0;
+    document.getElementById('btn-start').textContent = 'Iniciar';
+    document.getElementById('tap-btn').style.display = 'none';
+    document.getElementById('tap-count').textContent = '0';
+    document.getElementById('timer-clock').classList.remove('warning','done');
+    updateClockDisplay();
+    resetBar();
+    hideResult();
+  }
+
+  function tapBreath() {
+    tapCount++;
+    document.getElementById('tap-count').textContent = tapCount;
+  }
+
+  function showBreathingResult() {
+    const elapsed = timerDuration; // seconds
+    const rr = Math.round(tapCount * (60 / elapsed));
+    document.getElementById('result-rr').textContent = rr;
+    const interp = interpretRR(rr);
+    document.getElementById('result-interp').innerHTML = interp;
+    document.getElementById('timer-result').classList.add('visible');
+    document.getElementById('timer-result').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function interpretRR(rr) {
+    if (rr < 12)  return '<strong>Bradipnea</strong> — FR inferior al rango normal (12–20 rpm en adultos).';
+    if (rr <= 20) return '<strong>Normal</strong> — FR dentro del rango esperado en adultos (12–20 rpm).';
+    if (rr <= 25) return '<strong>Límite superior</strong> — FR ligeramente elevada. Reevalúa el contexto clínico.';
+    return '<strong>Taquipnea</strong> — FR superior al rango normal. Evalúa posible patología respiratoria.';
+  }
+
+  function hideResult() {
+    document.getElementById('timer-result').classList.remove('visible');
+  }
+
+  // Init display
+  updateClockDisplay();
 </script>
 
 </body>
