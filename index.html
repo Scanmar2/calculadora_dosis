@@ -545,6 +545,78 @@
 
   .disclaimer strong { color: var(--danger); }
 
+  /* ── Reference Tables ── */
+  .ref-tables {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .ref-table-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.4rem;
+    overflow-x: auto;
+  }
+
+  .ref-table-card h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.9rem;
+    color: var(--text);
+  }
+
+  .ref-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+  }
+
+  .ref-table th {
+    background: #F4F1EC;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    padding: 0.5rem 0.7rem;
+    border-bottom: 2px solid var(--border);
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .ref-table td {
+    padding: 0.48rem 0.7rem;
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+    color: var(--text);
+    white-space: nowrap;
+  }
+
+  .ref-table tr:last-child td { border-bottom: none; }
+
+  .ref-table tr:nth-child(even) td { background: #FAFAF8; }
+
+  .ref-table td:first-child {
+    font-weight: 600;
+    text-align: left;
+    color: var(--text);
+  }
+
+  .cetosis-negativa td { color: #2D7A4F; }
+  .cetosis-leve     td { color: #7A6B2D; }
+  .cetosis-moderada td { color: #B85C1F; }
+  .cetosis-grave    td { color: var(--danger); font-weight: 700; }
+
+  @media (max-width: 780px) {
+    .ref-tables { grid-template-columns: 1fr; }
+    .ref-table { font-size: 0.78rem; }
+    .ref-table th, .ref-table td { padding: 0.4rem 0.5rem; }
+  }
+
   /* ── Responsive ── */
   @media (max-width: 780px) {
     body { padding: 1.5rem 1rem 3rem; }
@@ -701,6 +773,130 @@
 
   <div class="disclaimer">
     <strong>⚠ Aviso importante:</strong> Esta herramienta es solo orientativa y <strong>no sustituye</strong> el criterio de un profesional de la salud. Consulta siempre con un médico o farmacéutico antes de administrar cualquier medicamento.
+  </div>
+
+  <!-- ── Tablas de referencia ── -->
+  <div class="ref-tables">
+
+    <!-- Tabla Cetosis -->
+    <div class="ref-table-card">
+      <h3>🔬 Clasificación de Cetosis</h3>
+      <table class="ref-table">
+        <thead>
+          <tr>
+            <th>Grado</th>
+            <th>Cetonemia (mmol/l)</th>
+            <th>Cetonuria (-/++++)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="cetosis-negativa">
+            <td>Negativa</td>
+            <td>≤ 0.4</td>
+            <td>−</td>
+          </tr>
+          <tr class="cetosis-leve">
+            <td>Leve</td>
+            <td>0.5 – 0.9</td>
+            <td>+</td>
+          </tr>
+          <tr class="cetosis-moderada">
+            <td>Moderada</td>
+            <td>1.0 – 2.9</td>
+            <td>++</td>
+          </tr>
+          <tr class="cetosis-grave">
+            <td>Grave</td>
+            <td>≥ 3.0</td>
+            <td>+++/++++</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Tabla Constantes vitales por edad -->
+    <div class="ref-table-card">
+      <h3>📊 Constantes Vitales Pediátricas por Edad</h3>
+      <table class="ref-table">
+        <thead>
+          <tr>
+            <th>Edad</th>
+            <th>Peso (kg)</th>
+            <th>FC (lpm)</th>
+            <th>FR (rpm)</th>
+            <th>TAS (mmHg)</th>
+            <th>TAD (mmHg)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>RN</td>
+            <td>3 – 4</td>
+            <td>120 – 180</td>
+            <td>30 – 50</td>
+            <td>50 – 75</td>
+            <td>30 – 50</td>
+          </tr>
+          <tr>
+            <td>6 m – 1 año</td>
+            <td>7 – 10</td>
+            <td>100 – 130</td>
+            <td>20 – 40</td>
+            <td>80 – 100</td>
+            <td>45 – 65</td>
+          </tr>
+          <tr>
+            <td>1 – 2 años</td>
+            <td>10 – 12</td>
+            <td>95 – 125</td>
+            <td>20 – 30</td>
+            <td>80 – 105</td>
+            <td>45 – 70</td>
+          </tr>
+          <tr>
+            <td>2 – 3 años</td>
+            <td>12 – 14</td>
+            <td>90 – 120</td>
+            <td>15 – 25</td>
+            <td>80 – 120</td>
+            <td>50 – 80</td>
+          </tr>
+          <tr>
+            <td>3 – 6 años</td>
+            <td>14 – 19</td>
+            <td>85 – 115</td>
+            <td>15 – 20</td>
+            <td>80 – 120</td>
+            <td>50 – 80</td>
+          </tr>
+          <tr>
+            <td>6 – 8 años</td>
+            <td>19 – 26</td>
+            <td>80 – 110</td>
+            <td>15 – 20</td>
+            <td>85 – 130</td>
+            <td>55 – 90</td>
+          </tr>
+          <tr>
+            <td>8 – 10 años</td>
+            <td>26 – 32</td>
+            <td>75 – 105</td>
+            <td>13 – 15</td>
+            <td>85 – 130</td>
+            <td>55 – 90</td>
+          </tr>
+          <tr>
+            <td>&gt;10 – 14 años</td>
+            <td>32 – 50</td>
+            <td>70 – 100</td>
+            <td>13 – 15</td>
+            <td>90 – 140</td>
+            <td>60 – 95</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
   </div>
 </div>
 
